@@ -1,0 +1,52 @@
+﻿@page "/fetchpeople"
+@inject HttpClient Http
+@using BlazorApp.Shared
+
+<h1>Our Guides</h1>
+
+@if (people == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Walk Date</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var person in people)
+            {
+                <tr>
+                    <td>@person.Name</td>
+                    <td>@person.Phone</td>
+                    <td>@person.WalkDate.ToShortDateString()</td>
+                   
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<a class="btn btn-info" href="/addpeople/">Add a Walk Date</a>
+
+@code {
+    private ProductNew[] people;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        people = await Http.GetFromJsonAsync<ProductNew[]>("/api/products");
+    }
+
+    protected async Task DeleteWidget(string id)
+    {
+
+        await Http.DeleteAsync("/api/products/" + id);
+        people = await Http.GetFromJsonAsync<ProductNew[]>("/api/products");
+    }
+}

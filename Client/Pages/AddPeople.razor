@@ -1,0 +1,50 @@
+﻿@using System.Net.Http
+@using BlazorApp.Shared
+@page "/addpeople"
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Components.NavigationManager navigation
+
+<h2>Create</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form>
+            <div class="form-group">
+                <label for="Name" class="control-label">Name</label>
+                <input for="Name" class="form-control" @bind="@people.Name" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Phone" class="control-label">Phone</label>
+                <input for="Phone" class="form-control" @bind="@people.Phone" />
+            </div>
+            <div class="form-group">
+                <label asp-for="WalkDate" class="control-label">Walk Date</label>
+                <input type="date" asp-for="WalkDate" class="form-control" @bind="@people.WalkDate" />
+            </div>
+        </form>
+        <button @onclick="@(async () => await CreatePerson())" class="btn btn-default">Save</button>
+        <button @onclick="@cancel" class="btn">Cancel</button>
+    </div>
+</div>
+
+@code {
+
+    private ProductNew people = new ProductNew();
+
+
+
+    protected async Task CreatePerson()
+    {
+
+        await Http.PostAsJsonAsync("/api/products", people);
+        navigation.NavigateTo("/fetchpeople");
+    }
+
+    void cancel()
+    {
+        navigation.NavigateTo("/");
+
+    }
+
+}
